@@ -1,6 +1,7 @@
 /**
  * AdQuench Website JavaScript
  * All interactive functionality and animations
+ * Model: Claude Fable 5
  */
 
 // ========================================
@@ -10,6 +11,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');
     
+    // --- MISSING: successModal definition ---
+    const successModal = document.getElementById('successModal');
+    // ---------------------------------------
+
     if (mobileMenuBtn && mobileMenu) {
         mobileMenuBtn.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
@@ -51,11 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // SUCCESS MODAL is now handled by Formspree's redirection or can be triggered if using AJAX.
-    // However, to keep it simple and reliable as requested ("end to end functionality"), 
-    // we'll let Formspree handle the submission. 
-    // If the user wants to stay on the page, we could use Fetch, but for now, standard POST is safer.
-
+    // SUCCESS MODAL – now properly defined and handled
     window.closeModal = function() {
         if (successModal) {
             successModal.classList.add('hidden');
@@ -196,11 +197,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ========================================
-    // Button Click Handlers
+    // Button Click Handlers (fixed preventDefault)
     // ========================================
     document.querySelectorAll('.btn-primary, .btn-secondary').forEach(btn => {
         if (!btn.type || btn.type !== 'submit') {
             btn.addEventListener('click', (e) => {
+                // Prevent default anchor behavior if it's a link
+                if (btn.tagName === 'A') {
+                    e.preventDefault();
+                }
                 if (!btn.closest('form')) {
                     const text = btn.textContent.trim().toLowerCase();
                     if (text.includes('get started') || text.includes('advertise')) {
@@ -216,11 +221,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // ========================================
-    // View Details Buttons
+    // View Details Buttons (prevent form issues)
     // ========================================
     document.querySelectorAll('button').forEach(btn => {
         if (btn.textContent.includes('View Details')) {
-            btn.addEventListener('click', () => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();      // stop any possible form submission
+                e.stopPropagation();     // avoid bubbling to parent forms
                 showNotification('Detailed location information coming soon!', 'info');
             });
         }
