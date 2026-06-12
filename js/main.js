@@ -1,6 +1,7 @@
 /**
  * AdQuench Website JavaScript
  * All interactive functionality and animations
+ * Model: Claude Fable 5
  */
 
 // ========================================
